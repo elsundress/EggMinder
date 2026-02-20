@@ -57,4 +57,8 @@ Para ejecutar este proyecto en tu máquina local:
 
 ## ✒️ Autor
 
+<<<<<<< HEAD
 **Misael Lopez Cancino** 
+=======
+**Misael Lopez Cancino** 
+>>>>>>> 3dad60b225a682678046920019ef3a2106e8af69
