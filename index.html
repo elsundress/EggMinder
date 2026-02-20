@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EggMinder Pro | Gestión IoT</title>
+    
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
         :root {
-            --primary-egg: #f1c40f; /* Amarillo Yema */
-            --secondary-egg: #fcf3cf; /* Amarillo Claro */
+            --primary-egg: #f1c40f;
             --dark-tech: #2c3e50;
             --light-bg: #f8f9fa;
         }
@@ -20,81 +23,54 @@
             font-family: 'Poppins', sans-serif;
             background-color: var(--light-bg);
             color: var(--dark-tech);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Para que el footer se quede abajo */
         }
 
-        /* Navbar Estilizado */
         .navbar {
             background: linear-gradient(135deg, var(--dark-tech) 0%, #34495e 100%);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .navbar-brand {
-            font-weight: 600;
-            color: var(--primary-egg) !important;
-            letter-spacing: 1px;
-        }
+        .navbar-brand { font-weight: 600; color: var(--primary-egg) !important; }
 
-        /* Transiciones de Vistas (SPA) */
-        .view-section {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.4s ease-in-out;
-        }
-        .active-section {
-            display: block;
-            opacity: 1;
-            animation: slideUp 0.5s ease-out;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        /* Vistas SPA */
+        .view-section { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; }
+        .active-section { display: block; opacity: 1; animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* Tarjetas Personalizadas */
+        /* Estilos de Tarjetas */
         .custom-card {
-            border: none;
-            border-radius: 15px;
-            background: white;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-            overflow: hidden;
+            border: none; border-radius: 15px; background: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: transform 0.3s ease;
         }
-        .custom-card:hover {
-            transform: translateY(-5px);
-        }
+        .custom-card:hover { transform: translateY(-5px); }
 
-        /* Indicadores LED */
-        .led-indicator {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-        }
-        .led-on {
-            background-color: #00d2ff; /* Azul LED futurista */
-            box-shadow: 0 0 10px #00d2ff, 0 0 20px #00d2ff;
-        }
-        .led-off {
-            background-color: #95a5a6;
-        }
+        /* Indicadores y Grid (Monitor) */
+        .led-indicator { width: 15px; height: 15px; border-radius: 50%; display: inline-block; }
+        .led-on { background-color: #00d2ff; box-shadow: 0 0 10px #00d2ff; }
+        .led-off { background-color: #95a5a6; }
+        .egg-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-top: 10px; }
+        .egg-slot { width: 100%; height: 15px; background-color: #ecf0f1; border-radius: 10px; }
+        .egg-present { background-color: var(--primary-egg); box-shadow: 0 2px 5px rgba(241, 196, 15, 0.4); }
 
-        /* Visualización de Huevos en Monitor */
-        .egg-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr); /* Bandeja típica de 12 */
-            gap: 5px;
-            margin-top: 10px;
+        /* Estilos del Menú Principal (Home) */
+        .hero-section {
+            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.9)), url('assets/hero-bg.jpg') center/cover;
+            color: white; border-radius: 20px; padding: 60px 20px; text-align: center; margin-bottom: 40px;
         }
-        .egg-slot {
-            width: 100%;
-            height: 15px;
-            background-color: #ecf0f1;
-            border-radius: 10px;
+        .home-menu-btn {
+            padding: 20px; font-size: 1.2rem; font-weight: 600; border-radius: 15px; transition: all 0.3s;
         }
-        .egg-present {
-            background-color: var(--primary-egg);
-            box-shadow: 0 2px 5px rgba(241, 196, 15, 0.4);
+        .home-menu-btn:hover { transform: scale(1.05); }
+
+        /* Contenedor principal que se expande */
+        .main-content { flex: 1; }
+
+        /* Footer */
+        .custom-footer {
+            background-color: var(--dark-tech); color: white; text-align: center;
+            padding: 15px 0; margin-top: auto; font-size: 0.9rem;
         }
     </style>
 </head>
@@ -102,7 +78,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top mb-4">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="#" onclick="navigate('home')">
                 <i class="fas fa-wifi me-2"></i>EggMinder<span style="color:white">Pro</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -111,7 +87,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <button class="nav-link btn btn-link text-white active" onclick="navigate('admin')">
+                        <button class="nav-link btn btn-link text-white active" onclick="navigate('home')">
+                            <i class="fas fa-home me-1"></i> Inicio
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link text-white" onclick="navigate('admin')">
                             <i class="fas fa-cogs me-1"></i> Admin
                         </button>
                     </li>
@@ -130,9 +111,40 @@
         </div>
     </nav>
 
-    <div class="container pb-5">
+    <div class="container pb-5 main-content">
 
-        <div id="view-admin" class="view-section active-section">
+        <div id="view-home" class="view-section active-section">
+            <div class="hero-section shadow">
+                <h1 class="display-4 fw-bold text-warning mb-3"><i class="fas fa-egg"></i> Bienvenido a EggMinder Pro</h1>
+                <p class="lead mb-4">El sistema inteligente de gestión de inventario y frescura alimentaria basado en IoT.</p>
+            </div>
+
+            <div class="row g-4 justify-content-center text-center">
+                <div class="col-md-4">
+                    <button class="btn btn-outline-primary w-100 home-menu-btn d-flex flex-column align-items-center" onclick="navigate('admin')">
+                        <i class="fas fa-cogs fa-3x mb-3"></i>
+                        <span>Configuración y Admin</span>
+                        <small class="text-muted mt-2 fw-normal">Registra nuevas bandejas en la red</small>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-success w-100 home-menu-btn d-flex flex-column align-items-center" onclick="navigate('control')">
+                        <i class="fas fa-toggle-on fa-3x mb-3"></i>
+                        <span>Panel de Control</span>
+                        <small class="text-muted mt-2 fw-normal">Activa la búsqueda del huevo más viejo</small>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-warning w-100 home-menu-btn d-flex flex-column align-items-center" onclick="navigate('monitor')">
+                        <i class="fas fa-chart-line fa-3x mb-3"></i>
+                        <span>Monitoreo en Vivo</span>
+                        <small class="text-muted mt-2 fw-normal">Visualiza el estatus y alertas en tiempo real</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-admin" class="view-section">
             <div class="row mb-4">
                 <div class="col-12 text-center">
                     <h2 class="fw-bold text-secondary">Panel de Configuración</h2>
@@ -142,8 +154,8 @@
 
             <div class="row g-4">
                 <div class="col-lg-4">
-                    <div class="custom-card p-4 h-100 border-start border-5 border-warning">
-                        <h4 class="mb-3"><i class="fas fa-plus-circle text-warning"></i> Nueva Bandeja</h4>
+                    <div class="custom-card p-4 h-100 border-start border-5 border-primary">
+                        <h4 class="mb-3"><i class="fas fa-plus-circle text-primary"></i> Nueva Bandeja</h4>
                         <form id="createTrayForm">
                             <div class="mb-3">
                                 <label class="form-label">Nombre del Dispositivo</label>
@@ -152,18 +164,15 @@
                             <div class="mb-3">
                                 <label class="form-label">Ubicación</label>
                                 <select class="form-select" id="trayLoc">
-                                    <option>Cocina Planta Alta</option>
-                                    <option>Almacén</option>
-                                    <option>Cocina Planta Baja</option>
+                                    <option>Refrigerador Cocina</option>
+                                    <option>Refrigerador Almacén</option>
+                                    <option>Mostrador</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-warning w-100 text-white fw-bold">
-                                Registrar Dispositivo
-                            </button>
+                            <button type="submit" class="btn btn-primary w-100 text-white fw-bold">Registrar</button>
                         </form>
                     </div>
                 </div>
-
                 <div class="col-lg-8">
                     <div class="custom-card p-4 h-100">
                         <h4 class="mb-3">Dispositivos Activos</h4>
@@ -177,11 +186,9 @@
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="adminTableBody">
-                                    </tbody>
+                                <tbody id="adminTableBody"></tbody>
                             </table>
                         </div>
-                        <small class="text-muted">* Se requieren al menos 3 dispositivos para operar correctamente.</small>
                     </div>
                 </div>
             </div>
@@ -190,36 +197,27 @@
         <div id="view-control" class="view-section">
             <div class="row mb-4 align-items-center">
                 <div class="col-md-8">
-                    <h2 class="fw-bold text-primary">Control de LEDs</h2>
-                    <p class="text-muted">Activa la función "Find Oldest Egg" (Encontrar huevo más viejo) remotamente.</p>
-                </div>
-                <div class="col-md-4 text-end">
-                    <span class="badge bg-primary fs-6">Modo: Manual</span>
+                    <h2 class="fw-bold text-success">Control de Dispositivos</h2>
+                    <p class="text-muted">Activa la función LED remotamente.</p>
                 </div>
             </div>
-
-            <div class="row g-4" id="controlGrid">
-                </div>
+            <div class="row g-4" id="controlGrid"></div>
         </div>
 
         <div id="view-monitor" class="view-section">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h2 class="fw-bold text-success">Dashboard en Vivo</h2>
+                    <h2 class="fw-bold text-warning">Dashboard de Monitoreo</h2>
                     <p class="text-muted mb-0">Tasa de refresco: <strong>2 segundos</strong></p>
                 </div>
-                <div class="spinner-grow text-success" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+                <div class="spinner-grow text-warning" role="status"></div>
             </div>
 
-            <div class="row g-4 mb-5" id="monitorVisuals">
-                </div>
+            <div class="row g-4 mb-4" id="monitorVisuals"></div>
 
             <div class="custom-card">
-                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <span class="fw-bold"><i class="fas fa-history me-2"></i>Log de Eventos (Últimos 10)</span>
-                    <span class="badge bg-secondary">Live Data</span>
+                <div class="card-header bg-dark text-white fw-bold">
+                    <i class="fas fa-history me-2"></i>Log de Eventos
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-striped mb-0">
@@ -231,8 +229,7 @@
                                 <th>Estado LED</th>
                             </tr>
                         </thead>
-                        <tbody id="monitorHistoryBody">
-                            </tbody>
+                        <tbody id="monitorHistoryBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -240,81 +237,72 @@
 
     </div>
 
+    <footer class="custom-footer">
+        <div class="container">
+            <p class="mb-0">
+                <i class="fas fa-code"></i> Desarrollado por <strong>Misael Lopez Cancino</strong> | Proyecto Universitario IoT &copy; 2026
+            </p>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         // ==========================================
-        // CONFIGURACIÓN
+        // CONFIGURACIÓN API
         // ==========================================
-        // ¡¡¡¡COLOCA TU URL DE MOCKAPI AQUÍ ABAJO!!!!
-        const API_URL = 'https://698a18b1c04d974bc6a15979.mockapi.io/api/v1/dispositivos_IoT'; 
+        const API_URL = 'https://698a18b1c04d974bc6a15979.mockapi.io/api/v1/dispositivos_IoT'; // ¡Pega tu URL!
         
         let monitorInterval = null;
-        let historyLog = []; // Almacenamiento local para la tabla de 10 registros
+        let historyLog = [];
+        // Variables para controlar las notificaciones y no saturar al usuario
+        let notifiedLowStock = new Set();
+        let notifiedSpoilage = new Set();
+        const MAX_DAYS_FRESH = 15; // Días máximos de vida útil
 
         // ==========================================
-        // SISTEMA DE NAVEGACIÓN (SPA)
+        // NAVEGACIÓN SPA
         // ==========================================
         function navigate(viewId) {
-    // 1. Actualizar menú activo (Visual del botón)
-    document.querySelectorAll('.nav-link').forEach(btn => {
-        btn.classList.remove('active');
-        // Si el botón clicado coincide con el evento, lo activamos
-        if(event && event.currentTarget === btn) {
-            btn.classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                btn.classList.remove('active');
+                if(event && event.currentTarget === btn) btn.classList.add('active');
+            });
+
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('active-section');
+            });
+
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) {
+                target.style.display = 'block';
+                setTimeout(() => target.classList.add('active-section'), 10);
+            }
+
+            if (viewId === 'admin') loadAdmin();
+            if (viewId === 'control') loadControl();
+            
+            if (viewId === 'monitor') startMonitoring();
+            else stopMonitoring();
         }
-    });
-
-    // 2. Gestionar vistas (Ocultar TODO primero)
-    document.querySelectorAll('.view-section').forEach(el => {
-        el.style.display = 'none'; // Ocultar inmediatamente
-        el.classList.remove('active-section');
-    });
-
-    // 3. Mostrar la vista seleccionada
-    const target = document.getElementById(`view-${viewId}`);
-    if (target) {
-        target.style.display = 'block';
-        // Pequeño delay técnico para permitir la animación de opacidad
-        setTimeout(() => target.classList.add('active-section'), 10);
-    }
-
-    // 4. Ejecutar lógica específica de la vista
-    if (viewId === 'admin') loadAdmin();
-    if (viewId === 'control') loadControl();
-    
-    // Lógica del Monitor (Start/Stop)
-    if (viewId === 'monitor') {
-        startMonitoring();
-    } else {
-        stopMonitoring();
-    }
-}
 
         // ==========================================
-        // FUNCIONES API (CRUD)
+        // FUNCIONES CORE (CRUD)
         // ==========================================
         async function getData() {
             try {
                 const res = await fetch(API_URL);
                 return await res.json();
-            } catch (e) { console.error("Error fetching data", e); return []; }
+            } catch (e) { console.error("Error API", e); return []; }
         }
 
         async function createTray(data) {
-            await fetch(API_URL, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
+            await fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
         }
 
         async function updateTray(id, data) {
-            await fetch(`${API_URL}/${id}`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
+            await fetch(`${API_URL}/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
         }
 
         async function deleteTray(id) {
@@ -322,7 +310,7 @@
         }
 
         // ==========================================
-        // VISTA 1: ADMINISTRACIÓN
+        // VISTA: ADMIN
         // ==========================================
         async function loadAdmin() {
             const trays = await getData();
@@ -334,11 +322,9 @@
                     <tr>
                         <td><span class="badge bg-secondary">${tray.id}</span></td>
                         <td class="fw-bold">${tray.name}</td>
-                        <td class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>${tray.location}</td>
+                        <td class="text-muted">${tray.location}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-danger" onclick="handleDelete('${tray.id}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="handleDelete('${tray.id}')"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -349,24 +335,25 @@
             e.preventDefault();
             const name = document.getElementById('trayName').value;
             const location = document.getElementById('trayLoc').value;
+            // Guardamos la fecha actual para calcular la vida útil
+            const date_added = new Date().toISOString(); 
             
-            // Inicializamos con 12 huevos y LED apagado
-            await createTray({ name, location, led_active: false, egg_count: 12 });
+            await createTray({ name, location, led_active: false, egg_count: 12, date_added });
             
             document.getElementById('trayName').value = '';
             loadAdmin();
-            alert('Bandeja registrada con éxito');
+            Swal.fire('¡Éxito!', 'Bandeja registrada correctamente.', 'success');
         });
 
         async function handleDelete(id) {
-            if(confirm('¿Eliminar esta bandeja del sistema?')) {
+            if(confirm('¿Eliminar esta bandeja?')) {
                 await deleteTray(id);
                 loadAdmin();
             }
         }
 
         // ==========================================
-        // VISTA 2: CONTROL
+        // VISTA: CONTROL
         // ==========================================
         async function loadControl() {
             const trays = await getData();
@@ -375,26 +362,14 @@
 
             trays.forEach(tray => {
                 const isChecked = tray.led_active ? 'checked' : '';
-                const statusText = tray.led_active ? 'BUSCANDO HUEVO VIEJO' : 'MONITOREO PASIVO';
-                const statusColor = tray.led_active ? 'text-primary' : 'text-muted';
-                
                 grid.innerHTML += `
                     <div class="col-md-4">
-                        <div class="custom-card p-4 text-center h-100 position-relative">
-                            <div class="position-absolute top-0 end-0 p-3">
-                                <i class="fas fa-wifi text-success"></i>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <i class="fas fa-egg fa-3x text-warning mb-2"></i>
-                                <h5 class="fw-bold">${tray.name}</h5>
-                                <small class="text-muted">${tray.location}</small>
-                            </div>
-
+                        <div class="custom-card p-4 text-center border-bottom border-4 border-success">
+                            <i class="fas fa-egg fa-3x text-success mb-2"></i>
+                            <h5 class="fw-bold">${tray.name}</h5>
                             <hr>
-
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="small fw-bold ${statusColor}" id="label-${tray.id}">${statusText}</span>
+                                <span class="small fw-bold text-muted" id="label-${tray.id}">${tray.led_active ? 'BUSCANDO HUEVO VIEJO' : 'MONITOREO PASIVO'}</span>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" style="width: 3em; height: 1.5em; cursor: pointer;"
                                         ${isChecked} onchange="toggleLed('${tray.id}', this.checked)">
@@ -407,25 +382,16 @@
         }
 
         async function toggleLed(id, state) {
-            // Actualización optimista de UI
-            const label = document.getElementById(`label-${id}`);
-            if(state) {
-                label.textContent = "BUSCANDO HUEVO VIEJO";
-                label.className = "small fw-bold text-primary";
-            } else {
-                label.textContent = "MONITOREO PASIVO";
-                label.className = "small fw-bold text-muted";
-            }
-            // Envío a API
+            document.getElementById(`label-${id}`).textContent = state ? "BUSCANDO HUEVO VIEJO" : "MONITOREO PASIVO";
             await updateTray(id, { led_active: state });
         }
 
         // ==========================================
-        // VISTA 3: MONITOREO (CORE DEL PROYECTO)
+        // VISTA: MONITOR Y LÓGICA DE ALERTAS
         // ==========================================
         function startMonitoring() {
-            updateDashboard(); // Primera carga inmediata
-            monitorInterval = setInterval(updateDashboard, 2000); // Regla de negocio: 2 segundos
+            updateDashboard();
+            monitorInterval = setInterval(updateDashboard, 2000);
         }
 
         function stopMonitoring() {
@@ -441,74 +407,87 @@
             visualsContainer.innerHTML = '';
 
             trays.forEach(tray => {
-                // 1. Simulación visual de huevos (Generamos "slots" visuales)
+                // LÓGICA 1: Alerta de Vida Útil (Caducidad)
+                if (tray.date_added) {
+                    const addedDate = new Date(tray.date_added);
+                    const now = new Date();
+                    const diffTime = Math.abs(now - addedDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+
+                    if (diffDays >= MAX_DAYS_FRESH && !notifiedSpoilage.has(tray.id)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '¡Alerta de Caducidad!',
+                            text: `Los huevos en "${tray.name}" llevan más de ${MAX_DAYS_FRESH} días. ¡Deben usarse de inmediato!`,
+                            confirmButtonColor: '#d33'
+                        });
+                        notifiedSpoilage.add(tray.id); // Evita que la alerta salga cada 2 segundos
+                    }
+                }
+
+                // LÓGICA 2: Alerta de Stock Bajo (3 huevos o menos)
+                if (tray.egg_count <= 3 && !notifiedLowStock.has(tray.id)) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'warning',
+                        title: `¡Stock bajo en ${tray.name}! (${tray.egg_count} huevos)`,
+                        showConfirmButton: false,
+                        timer: 4000
+                    });
+                    notifiedLowStock.add(tray.id);
+                } 
+                // Si recargan la bandeja, reseteamos la notificación
+                else if (tray.egg_count > 3) {
+                    notifiedLowStock.delete(tray.id);
+                }
+
+                // Dibujar UI (Slots)
                 let slotsHTML = '';
-                // Simulamos una bandeja de 12 espacios
                 for(let i=0; i<12; i++) {
-                    // Si i es menor que egg_count, pintamos el huevo
                     const isPresent = i < tray.egg_count ? 'egg-present' : '';
                     slotsHTML += `<div class="egg-slot ${isPresent}"></div>`;
                 }
 
-                // 2. Estado del LED
                 const ledClass = tray.led_active ? 'led-on' : 'led-off';
-                const ledText = tray.led_active ? 'ACTIVO' : 'INACTIVO';
-
-                // 3. Renderizar Tarjeta Gráfica
+                
                 visualsContainer.innerHTML += `
                     <div class="col-md-4">
-                        <div class="custom-card p-3">
+                        <div class="custom-card p-3 position-relative">
+                            ${tray.egg_count <= 3 ? '<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">Bajo<br>Stock</span>' : ''}
                             <div class="d-flex justify-content-between mb-2">
                                 <h6 class="fw-bold m-0">${tray.name}</h6>
-                                <div class="d-flex align-items-center">
-                                    <div class="led-indicator ${ledClass}"></div>
-                                    <small style="font-size:0.7rem">LED ${ledText}</small>
-                                </div>
+                                <div class="led-indicator ${ledClass}"></div>
                             </div>
                             <div class="d-flex justify-content-between align-items-end mb-2">
-                                <h2 class="display-6 fw-bold m-0 text-warning">${tray.egg_count}</h2>
-                                <span class="text-muted small">huevos restantes</span>
+                                <h2 class="display-6 fw-bold m-0 ${tray.egg_count <= 3 ? 'text-danger' : 'text-warning'}">${tray.egg_count}</h2>
+                                <span class="text-muted small">restantes</span>
                             </div>
-                            <div class="egg-grid">
-                                ${slotsHTML}
-                            </div>
+                            <div class="egg-grid">${slotsHTML}</div>
                         </div>
                     </div>
                 `;
 
-                // 4. Agregar al Historial (Array Local)
-                // Unshift agrega al principio
-                historyLog.unshift({
-                    time: time,
-                    name: tray.name,
-                    count: tray.egg_count,
-                    led: ledText,
-                    ledState: tray.led_active // para colorear la tabla
-                });
+                historyLog.unshift({ time: time, name: tray.name, count: tray.egg_count, led: tray.led_active ? 'ACTIVO' : 'INACTIVO', state: tray.led_active });
             });
 
-            // 5. Recortar historial a 10 registros (Regla de Negocio)
-            if (historyLog.length > 10) {
-                historyLog = historyLog.slice(0, 10);
-            }
+            if (historyLog.length > 10) historyLog = historyLog.slice(0, 10);
 
-            // 6. Renderizar Tabla
             tableBody.innerHTML = '';
             historyLog.forEach(log => {
-                const badgeColor = log.ledState ? 'bg-primary' : 'bg-secondary';
                 tableBody.innerHTML += `
                     <tr>
                         <td>${log.time}</td>
                         <td>${log.name}</td>
                         <td><strong>${log.count}</strong> / 12</td>
-                        <td><span class="badge ${badgeColor}">${log.led}</span></td>
+                        <td><span class="badge ${log.state ? 'bg-success' : 'bg-secondary'}">${log.led}</span></td>
                     </tr>
                 `;
             });
         }
 
-        // Iniciar en Admin
-        loadAdmin();
+        // Iniciar en la página principal (Home)
+        navigate('home');
 
     </script>
 </body>

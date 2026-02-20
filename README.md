@@ -55,14 +55,6 @@ Para ejecutar este proyecto en tu máquina local:
 3.  **Ejecutar:**
     Simplemente abre el archivo `index.html` en tu navegador web favorito (Chrome, Edge, Firefox). No requiere servidor Node.js ni instalaciones adicionales.
 
-## 📸 Capturas de Pantalla
-
-### Panel de Administración
-_(Puedes agregar aquí tus capturas de pantalla, ej: ![Admin](./img/admin.png))_
-
-### Monitoreo en Vivo
-_(Espacio para captura del monitor)_
-
 ## ✒️ Autor
 
-**Misael** - *Desarrollo y
+**Misael Lopez Cancino** 
